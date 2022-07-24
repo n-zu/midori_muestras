@@ -58,13 +58,24 @@ const cajasIniciales = [
   },
 ];
 
+const getBoxes = () => {
+  try {
+    return JSON.parse(localStorage.getItem("cajas")) ?? cajasIniciales;
+  } catch (error) {
+    return cajasIniciales;
+  }
+};
+
 function App() {
-  const [cajas, setCajas] = useState(cajasIniciales);
+  const [cajas, _setCajas] = useState(getBoxes());
+  const setCajas = (cajas) => {
+    localStorage.setItem("cajas", JSON.stringify(cajas));
+    _setCajas(cajas);
+  };
   const [actual, setActual] = useState({});
   const updActual = (label, value) => setActual({ ...actual, [label]: value });
 
   const cajasFiltradas = cajas.filter(({ tipo, numero, año }) => {
-    console.log(actual, tipo, numero, año);
     if (actual.tipo && actual.tipo !== tipo) return false;
     if (actual.numero && actual.numero !== String(numero)) return false;
     if (actual.año && !String(año).startsWith(actual.año)) return false;
